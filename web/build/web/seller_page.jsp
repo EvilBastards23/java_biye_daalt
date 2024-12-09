@@ -62,7 +62,7 @@
             }
         </style>
     </head>
-    
+    Error processing product: Unknown column 'image_url' in 'field list'
     <body>
         <sql:setDataSource var="con" 
                           driver="com.mysql.cj.jdbc.Driver"

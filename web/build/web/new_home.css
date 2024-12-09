@@ -36,44 +36,46 @@ body {
   margin-left: 15px;
   cursor: pointer;
 }
+
 /* More specific selectors and important rules for buttons */
 .header .icons .button,
 .header .icons a.button {
-    text-decoration: none !important;
-    padding: 8px 16px !important;
-    margin-left: 15px !important;
-    border-radius: 4px !important;
-    font-size: 14px !important;
-    display: inline-block !important;
-    transition: all 0.3s ease;
+  text-decoration: none !important;
+  padding: 8px 16px !important;
+  margin-left: 15px !important;
+  border-radius: 4px !important;
+  font-size: 14px !important;
+  display: inline-block !important;
+  transition: all 0.3s ease;
 }
 
 /* Sign In button */
 .header .icons .button:first-of-type,
 .header .icons a.button:first-of-type {
-    border: 1px solid #333 !important;
-    color: #333 !important;
-    background: transparent !important;
+  border: 1px solid #333 !important;
+  color: #333 !important;
+  background: transparent !important;
 }
 
 /* Sign Up button */
 .header .icons .button:last-of-type,
 .header .icons a.button:last-of-type {
-    background: #333 !important;
-    color: white !important;
-    border: 1px solid #333 !important;
+  background: #333 !important;
+  color: white !important;
+  border: 1px solid #333 !important;
 }
 
 /* Hover effects */
 .header .icons .button:hover,
 .header .icons a.button:hover {
-    opacity: 0.8;
-    transform: translateY(-1px);
+  opacity: 0.8;
+  transform: translateY(-1px);
 }
 
 /* Filters */
 .filters {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
   padding: 20px;
   background: #fefefe;
@@ -144,15 +146,54 @@ body {
   background: #f7f1e3;
   border-top: 1px solid #ddd;
 }
-  .cart-sidebar {
-    position: fixed;
-    right: -300px;
-    top: 0;
-    width: 300px;
-    height: 100%;
-    background: #f4f4f4;
-    transition: right 0.3s;
+
+/* Cart Sidebar */
+.cart-sidebar {
+  position: fixed;
+  right: -300px;
+  top: 0;
+  width: 300px;
+  height: 100%;
+  background: #f4f4f4;
+  transition: right 0.3s;
 }
 .cart-sidebar.open {
-    right: 0;
+  right: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .header {
+    flex-wrap: wrap;
+    padding: 10px;
+  }
+  .header .nav ul {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .filters {
+    flex-direction: column;
+    padding: 10px;
+  }
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+  .header .icons {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header .logo {
+    font-size: 20px;
+  }
+  .filters select {
+    font-size: 14px;
+  }
+  .product-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
 }

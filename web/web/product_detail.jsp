@@ -11,19 +11,21 @@
 
 <sql:query dataSource="${con}" var="result">
 SELECT 
-    model_number, 
-    MIN(product_name) AS product_name, -- Pick the first name alphabetically
-    MIN(price) AS price,               -- Minimum price
-    MIN(category_name) AS category_name,
-    GROUP_CONCAT(DISTINCT color) AS colors,
-    GROUP_CONCAT(DISTINCT size) AS sizes,
-    GROUP_CONCAT(DISTINCT image_url) AS images
+    p.model_number, 
+    MIN(p.product_name) as product_name, 
+    MIN(p.price) as price,               
+    c.category_name,
+    GROUP_CONCAT(DISTINCT p.color) AS colors,
+    GROUP_CONCAT(DISTINCT p.size) AS sizes,
+    GROUP_CONCAT(DISTINCT TO_BASE64(p.image_blob)) AS images
 FROM 
-    product_category_image
+    product p
+JOIN 
+    category c ON p.category_id = c.category_id
 WHERE 
-    model_number = ? -- Filter before grouping
+    p.model_number = ? 
 GROUP BY 
-    model_number;
+    p.model_number, c.category_name;
     <sql:param value="${param.model_number}"/>
 </sql:query>
 
@@ -50,42 +52,42 @@ GROUP BY
     <div class="icons">
       <i class="fas fa-search"></i>
       <i class="fas fa-shopping-cart"></i>
-       <c:choose>
-                <c:when test="${empty sessionScope.user_id}">
-                    <a href="sign_in_page.jsp" class="button">Sign In</a>
-                    <a href="sign_up_page.jsp" class="button">Sign Up</a>
-                </c:when>
-                <c:otherwise>
-                    <a href="profile.jsp" class="button">My Profile</a>
-                    <a href="logout.jsp" class="button">Logout</a>
-                </c:otherwise>
-            </c:choose>
+      <c:choose>
+        <c:when test="${empty sessionScope.user_id}">
+          <a href="sign_in_page.jsp" class="button">Sign In</a>
+          <a href="sign_up_page.jsp" class="button">Sign Up</a>
+        </c:when>
+        <c:otherwise>
+          <a href="profile.jsp" class="button">My Profile</a>
+          <a href="logout.jsp" class="button">Logout</a>
+        </c:otherwise>
+      </c:choose>
     </div>
 </header>
 
-<!-- Product Details -->
-<!-- Product Details -->
 <form method="get" action="add_cart.jsp">
   <c:forEach var="product" items="${result.rows}">
     <div class="product-details">
-      <div class="product-image">
-        <img name="product_image" id="product-image-${product.model_number}" 
-             src="${fn:split(product.images, ',')[0]}" 
-             alt="${product.product_name}">
-      </div>
+      <div class="product_image">
+              <img id="product-image-${product.model_number}" 
+                   src="data:image/jpg;base64,${fn:split(product.images, ',')[0]}" 
+                   alt="${product.product_name}"
+                   >
+            </div>
       <input type="hidden" name="model_number" value="${param.model_number}">
-      <p name="product_name" class="product-name">${product.product_name}</p>
-      <p name="price" class="price">Price: $${product.price}</p>
+      <p class="product-name">${product.product_name}</p>
+      <p class="category-name">Category: ${product.category_name}</p>
+      <p class="price">Price: $${product.price}</p>
       <div class="details">
         <div class="color-options">
-          colors:
+          <p>Colors:</p>
           <c:forEach var="color" items="${fn:split(product.colors, ',')}"> 
-            <input id="${color}" type="radio" name="color" class="color-button" value="${color}" style="display: none;" />
+            <input id="${color}" type="radio" name="color" class="color-button" value="${color}" style="display: none;">
             <label for="${color}" class="colorLabel" style="background-color: ${color};"></label>
-        </c:forEach>
+          </c:forEach>
         </div>
-         <div class="size-selector">
-          <label>Select Sizes:</label>
+        <div class="size-selector">
+          <p>Select Sizes:</p>
           <c:forEach var="size" items="${fn:split(product.sizes, ',')}">
             <div>
               <input type="radio" name="sizes" value="${size}" id="size-${product.model_number}-${size}">
@@ -93,12 +95,10 @@ GROUP BY
             </div>
           </c:forEach>
         </div>
-        </select>
-
+      </div>
     </div>
-    
   </c:forEach>
-      <input type="submit" class="add-to-cart">Add to cart
+  <input type="submit" class="add-to-cart" value="Add to Cart">
 </form>
 
 </body>
